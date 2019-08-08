@@ -76,12 +76,18 @@ def handle_message(event):
     stoploss= 0.0020
 
 
-    
+    startminute = datetime.now().minute
+    starthour = datetime.now().hour
+    startday = datetime.now().day
+
+    nowminute = datetime.now().minute
+    nowhour = datetime.now().hour
+    nowday = datetime.now().day
 
     position = 0
 
 
-    while(event.message.text == "1"):
+    while((nowday - startday)*24*60+(nowhour - starthour)*60+(nowminute - startminute)<180):
     # 現在の価格取得
         now_price = moju.get_Mdata(1,"S5",instrument)['close'][0]
         line_bot_api.reply_message(
@@ -204,6 +210,10 @@ def handle_message(event):
 
 
         time.sleep(60*2)
+
+        nowminute = datetime.now().minute
+        nowhour = datetime.now().hour
+        nowday = datetime.now().day
 
 
 
