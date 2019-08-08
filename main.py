@@ -13,6 +13,8 @@ import os
 from urllib import request as req
 from bs4 import BeautifulSoup
 import urllib.parse as parse
+import moju
+import time
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -69,26 +71,142 @@ def callback():
 
 def handle_message(event):
     
-    params = {
-        "count": 1,
-        "granularity": 'S5'  # 1時間足
-    }
+    instrument = "GBP_USD"
+    ashi = "M5"
+    stoploss= 0.0020
 
-    # 過去データリクエスト
-    res = instruments.InstrumentsCandles(instrument=instrument, params=params)
-    api.request(res)
-    data = []
-    for raw in res.response['candles']:
-        data.append([raw['time'], raw['volume'], raw['mid']['o'], raw['mid']['h'], raw['mid']['l'], raw['mid']['c']])
 
-    df = pd.DataFrame(data)
-    df.columns = ['time', 'volume', 'open', 'high', 'low', 'close']
-    del df['time']
-    del df['volume']
+    
 
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=df['close']))
+    position = 0
+
+
+    while(event.message.text == "1"):
+    # 現在の価格取得
+        now_price = moju.get_Mdata(1,"S5",instrument)['close'][0]
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="現在の価格:" + now_price)) 
+
+        # ボリンジャーバンド2σ取得
+        num_bb = 20 #期間
+        upper,lower = moju.bband(moju.get_Mdata(num_bb,ashi,instrument),num_bb)
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="2σ:" + upper)) 
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="-2σ:" + lower)) 
+
+        # dmi
+        # 期間14
+        num_dmi = 14
+        df_dmi = moju.get_Mdata(num_dmi*2,ashi,instrument)
+        trs = moju.TR(df_dmi)
+        pDM,mDM = moju.DMs(df_dmi)
+        EMA_TR = moju.EMA(trs,num_dmi)
+        EMA_pDM = moju.EMA(pDM,num_dmi)
+        EMA_mDM = moju.EMA(mDM,num_dmi)
+
+        pDI = EMA_pDM[-1] / EMA_TR[-1] * 100
+        mDI = EMA_mDM[-1] / EMA_TR[-1] * 100
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="+DI:" + pDI))
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="-DI:" + mDI))  
+        
+
+        # ema_tr = moju.EMA(trs,num_dmi)
+
+        # del df_dmi['TR']
+        # del df_dmi['+DM']
+        # del df_dmi['-DM']
+
+        # df_dmi['+DI'] = 100 * (df_dmi['EMA_+DM'] / df_dmi['EMA_TR'])
+        # df_dmi['-DI'] = 100 * (df_dmi['EMA_-DM'] / df_dmi['EMA_TR'])
+
+
+        # # MACD
+        # #12,26,9
+        num1_macd = 12
+        num2_macd = 26
+        num3_macd = 9
+
+        df_macd = moju.get_Mdata(num2_macd*2,ashi,instrument)
+        macd_s = moju.MACD(df_macd,num1_macd)
+        macd_l = moju.MACD(df_macd,num2_macd)
+        EMA_s = moju.EMA(macd_s,num1_macd)
+        EMA_l = moju.EMA(macd_l,num2_macd)
+        del EMA_s[:14]
+        
+
+        i = 0
+        MACD = []
+        while i < len(EMA_l):
+            MACD.append(EMA_s[i] - EMA_l[i])
+            i += 1
+
+        signal = moju.EMA(MACD,num3_macd)
+
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="MACD:" + MACD[-1])) 
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextSendMessage(text="signal:" + signal[-1])) 
+
+
+        # 損切り20pips
+        # ショート、条件
+        # 2σにタッチ
+        # positive lineが20以上  なし   
+        # +DMが-DMより上
+        # MACDがsignal lineより上
+        # if now_price > bband['upper']:
+        # position = 0
+        if now_price >= upper and pDI > mDI and MACD[-1] > signal[-1] and position == 0:
+            price = now_price + stoploss #損切りline
+            moju.order(-10000,instrument,price)
+            position = -1
+            order_price = now_price
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text="売り:" + order_price * "\nshort"))  
+            
+
+        # # ロング、条件
+        if now_price <= lower and pDI < mDI and MACD[-1] < signal[-1] and position == 0 :
+            price  = now_price - stoploss #損切りline
+            moju.order(10000,instrument,price)
+            position = 1
+            order_price = now_price
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text="買い:" + order_price + "\nlong"))  
+
+
+        # 決済
+        if position == -1 and now_price < lower and MACD[-1] <= signal[-1]:
+            moju.short_position(instrument)
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text="売り決済")) 
+            position = 0
+
+        if position == 1 and now_price > lower and MACD[-1] >= signal[-1]:
+            moju.short_position(instrument)
+            line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text="買い決済")) 
+            position = 0
+
+
+        time.sleep(60*2)
+
+
+
 
 
 

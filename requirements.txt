@@ -1,8 +1,7 @@
-Flask==1.1.1
-line-bot-sdk==1.12.1
-BeautifulSoup4==4.7.1
-urllib3==1.24.1
+numpy==1.16.1
 oandapyV20==0.6.3
 pandas==0.24.1
 pytz==2018.9
-numpy==1.16.1
+matplotlib==3.0.2
+Flask==1.1.1
+line-bot-sdk==1.12.1
