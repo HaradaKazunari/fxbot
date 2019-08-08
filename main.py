@@ -10,9 +10,6 @@ import numpy as np
 from flask import Flask, request, abort
 from flask.logging import create_logger
 import os
-from urllib import request as req
-from bs4 import BeautifulSoup
-import urllib.parse as parse
 import moju
 import time
 from datetime import datetime
@@ -67,9 +64,6 @@ def callback():
 
 
 @handler.add(MessageEvent, message=TextMessage)
-
-
-
 def handle_message(event):
     
     instrument = "GBP_USD"
