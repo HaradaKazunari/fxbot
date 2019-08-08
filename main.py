@@ -83,6 +83,9 @@ def handle_message(event):
 
 
     while((nowday - startday)*24*60+(nowhour - starthour)*60+(nowminute - startminute)<180):
+        line_bot_api.reply_message(
+                event.reply_token,
+                TextSendMessage(text="ok")) 
     # 現在の価格取得
         now_price = moju.get_Mdata(1,"S5",instrument)['close'][0]
         line_bot_api.reply_message(
