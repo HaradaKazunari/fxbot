@@ -150,6 +150,16 @@ def main(position):
         print("買い決済")
         position = 0
 
+    # 損切り
+    if position == -1 and now_price > order_price + stoploss:
+        moju.short_position(instrument)
+        position = 0
+
+    if position == 1 and now_price < order_price - stoploss:
+        moju.long_position(instrument)
+        position = 0
+
+
     return position
     
 
