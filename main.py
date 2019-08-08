@@ -54,9 +54,7 @@ nowday = datetime.now().day
 position = 0
 
 def main():
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text="ok"))  
+    
     # 現在の価格取得s
     now_price = moju.get_Mdata(1,ashi,instrument)['close'][0]
     print("現在レート:",now_price)
