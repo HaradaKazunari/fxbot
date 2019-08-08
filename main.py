@@ -37,7 +37,7 @@ YOUR_CHANNEL_SECRET = os.environ["YOUR_CHANNEL_SECRET"]
 line_bot_api = LineBotApi(YOUR_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(YOUR_CHANNEL_SECRET)
 
-accountID = "101-001-10531929-001"
+accountID = "101-001-10531929-002"
 access_token = "70d74d6fe6d320399a4cc2c639d14561-eb0e01166e59d92331fedd308dd581f0"
 api = API(access_token = access_token)
 
