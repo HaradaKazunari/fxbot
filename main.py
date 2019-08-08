@@ -173,12 +173,12 @@ def main(position):
 if __name__ == "__main__":
 #    app.run()
     position = 0
-    # while((nowday - startday)*24*60+(nowhour - starthour)*60+(nowminute - startminute)<180):
-    #     nowminute = datetime.now().minute
-    #     nowhour = datetime.now().hour
-    #     nowday = datetime.now().day
-    position = main(position)
-    time.sleep(60)
+    while((nowday - startday)*24*60+(nowhour - starthour)*60+(nowminute - startminute)<180):
+        nowminute = datetime.now().minute
+        nowhour = datetime.now().hour
+        nowday = datetime.now().day
+        position = main(position)
+        time.sleep(60)
 
 
 
