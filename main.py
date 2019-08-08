@@ -169,7 +169,7 @@ def main(position,order_price):
         order_price = 0
 
 
-    return position
+    return position,order_price
     
 
     
