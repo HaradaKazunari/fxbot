@@ -197,7 +197,7 @@ def MACD(df,num):
     #     df['EMA_L_close'][t] = df['EMA_L_close'][t-1] + (a * (df['close'][t] - df['EMA_L_close'][t-1]))
     #     t += 1
 
-    return df
+    
 
 
 
