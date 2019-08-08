@@ -197,6 +197,7 @@ def main(position,order_price):
 
 if __name__ == "__main__":
 #    app.run()
+    yobi = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
     position = 0
     count = 0
     for i in yobi:
