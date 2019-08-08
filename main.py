@@ -51,8 +51,14 @@ nowminute = datetime.now().minute
 nowhour = datetime.now().hour
 nowday = datetime.now().day
 
+positions = 0
+order_price = 0
 
-def main(position):
+
+def main():
+
+    global positions
+    global order_price
     
     # 現在の価格取得s
     now_price = moju.get_Mdata(1,ashi,instrument)['close'][0]
@@ -144,20 +150,24 @@ def main(position):
         moju.short_position(instrument)
         print("売り決済")
         position = 0
+        order_price = 0
 
     if position == 1 and now_price > lower and MACD[-1] >= signal[-1]:
         moju.short_position(instrument)
         print("買い決済")
         position = 0
+        order_price = 0
 
     # 損切り
     if position == -1 and now_price > order_price + stoploss:
         moju.short_position(instrument)
         position = 0
+        order_price = 0
 
     if position == 1 and now_price < order_price - stoploss:
         moju.long_position(instrument)
         position = 0
+        order_price = 0
 
 
     return position
@@ -177,7 +187,7 @@ if __name__ == "__main__":
         nowminute = datetime.now().minute
         nowhour = datetime.now().hour
         nowday = datetime.now().day
-        position = main(position)
+        main()
         time.sleep(60)
 
 
