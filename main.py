@@ -114,12 +114,7 @@ def handle_message(event):
         # ボリンジャーバンド2σ取得
         num_bb = 20 #期間
         upper,lower = moju.bband(moju.get_Mdata(num_bb,ashi,instrument),num_bb)
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text="2σ:" + upper)) 
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text="-2σ:" + lower)) 
+        
 
         # dmi
         # 期間14
@@ -133,12 +128,7 @@ def handle_message(event):
 
         pDI = EMA_pDM[-1] / EMA_TR[-1] * 100
         mDI = EMA_mDM[-1] / EMA_TR[-1] * 100
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text="+DI:" + pDI))
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text="-DI:" + mDI))  
+        
         
 
         # ema_tr = moju.EMA(trs,num_dmi)
@@ -173,12 +163,7 @@ def handle_message(event):
 
         signal = moju.EMA(MACD,num3_macd)
 
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text="MACD:" + MACD[-1])) 
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text="signal:" + signal[-1])) 
+        
 
 
         # 損切り20pips
@@ -196,7 +181,7 @@ def handle_message(event):
             order_price = now_price
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text="売り:" + order_price * "\nshort"))  
+                TextSendMessage(text="short"))  
             
 
         # # ロング、条件
@@ -207,7 +192,7 @@ def handle_message(event):
             order_price = now_price
             line_bot_api.reply_message(
                 event.reply_token,
-                TextSendMessage(text="買い:" + order_price + "\nlong"))  
+                TextSendMessage(text="long"))  
 
 
         # 決済
