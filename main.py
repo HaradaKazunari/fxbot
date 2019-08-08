@@ -198,11 +198,20 @@ def main(position,order_price):
 if __name__ == "__main__":
 #    app.run()
     position = 0
-    now_weekday = str(datetime.now().strftime("%A"))
-    while(now_weekday != 'saturday' | now_weekday != 'sunday'):
+    count = 0
+    for i in yobi:
+        if i == datetime.now().strftime("%A"):
+            now_weekday = count
+        count = count + 1
+
+    while(now_weekday != 6 | now_weekday != 7):
         position,order_price = main(position,order_price)
         time.sleep(60)
-    nowweekday = datetime.now().strftime("%A")
+        count = 0
+        for i in yobi:
+            if i == datetime.now().strftime("%A"):
+                now_weekday = count
+            count = count + 1
 
 
 
