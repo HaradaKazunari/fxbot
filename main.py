@@ -199,7 +199,7 @@ if __name__ == "__main__":
 #    app.run()
     position = 0
     now_weekday = datetime.now().strftime("%A")
-    while(now_weekday != "saturday" | now_weekday != "sunday"):
+    while(now_weekday != 'saturday' | now_weekday != 'sunday'):
         position,order_price = main(position,order_price)
         time.sleep(60)
     nowweekday = datetime.now().strftime("%A")
