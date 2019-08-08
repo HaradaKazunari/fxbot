@@ -51,11 +51,10 @@ nowminute = datetime.now().minute
 nowhour = datetime.now().hour
 nowday = datetime.now().day
 
-position = ""
+position = 0
 
 def main():
-    if position == None:
-        position = 0
+    
     # 現在の価格取得s
     now_price = moju.get_Mdata(1,ashi,instrument)['close'][0]
     print("現在レート:",now_price)
@@ -124,7 +123,7 @@ def main():
     # MACDがsignal lineより上
     # if now_price > bband['upper']:
     # position = 0
-    if now_price >= upper and pDI > mDI and MACD[-1] > signal[-1] and position == 0:
+    if now_price >= upper and pDI > mDI and MACD[-1] > signal[-1]:
         price = now_price + stoploss #損切りline
         moju.order(-10000,instrument,price)
         position = -1
@@ -133,7 +132,7 @@ def main():
         
 
     # # ロング、条件
-    if now_price <= lower and pDI < mDI and MACD[-1] < signal[-1] and position == 0 :
+    if now_price <= lower and pDI < mDI and MACD[-1] < signal[-1] :
         price  = now_price - stoploss #損切りline
         moju.order(10000,instrument,price)
         position = 1
