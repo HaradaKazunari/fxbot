@@ -40,26 +40,7 @@ api = API(access_token = access_token)
 
 # 通貨の選択
 
-def get_Mdata(num,ashi,instrument):
 
-    params = {
-        "count": num,
-        "granularity": ashi  # 1時間足
-    }
-
-    # 過去データリクエスト
-    res = instruments.InstrumentsCandles(instrument=instrument, params=params)
-    api.request(res)
-    data = []
-    for raw in res.response['candles']:
-        data.append([raw['time'], raw['volume'], raw['mid']['o'], raw['mid']['h'], raw['mid']['l'], raw['mid']['c']])
-
-    df = pd.DataFrame(data)
-    df.columns = ['time', 'volume', 'open', 'high', 'low', 'close']
-    del df['time']
-    del df['volume']
-
-    return df.astype(float)
 
 
 @app.route("/")
@@ -108,7 +89,7 @@ def handle_message(event):
 
     while((nowday - startday)*24*60+(nowhour - starthour)*60+(nowminute - startminute)<180):
     # 現在の価格取得
-        now_price = get_Mdata(1,ashi,instrument)['close'][0]
+        now_price = moju.get_Mdata(1,ashi,instrument)['close'][0]
         
 
         # ボリンジャーバンド2σ取得
