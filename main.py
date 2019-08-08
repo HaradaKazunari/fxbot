@@ -51,13 +51,13 @@ nowminute = datetime.now().minute
 nowhour = datetime.now().hour
 nowday = datetime.now().day
 
-positions = 0
+position = 0
 order_price = 0
 
 
 def main():
 
-    global positions
+    global position
     global order_price
     
     # 現在の価格取得s
