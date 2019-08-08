@@ -178,7 +178,7 @@ def handle_message(event):
             price = now_price + stoploss #損切りline
             moju.order(-10000,instrument,price)
             position = -1
-            order_price = now_price
+            # order_price = now_price
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text="short"))  
@@ -189,7 +189,7 @@ def handle_message(event):
             price  = now_price - stoploss #損切りline
             moju.order(10000,instrument,price)
             position = 1
-            order_price = now_price
+            # order_price = now_price
             line_bot_api.reply_message(
                 event.reply_token,
                 TextSendMessage(text="long"))  
