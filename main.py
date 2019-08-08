@@ -15,6 +15,7 @@ from bs4 import BeautifulSoup
 import urllib.parse as parse
 import moju
 import time
+from datetime import datetime
 
 from linebot import (
     LineBotApi, WebhookHandler
