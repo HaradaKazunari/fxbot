@@ -13,6 +13,9 @@ import os
 import moju
 import time
 from datetime import datetime
+import sys 
+import csv 
+
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -43,21 +46,17 @@ ashi = "M5"
 stoploss= 0.0020
 
 
-startminute = datetime.now().minute
-starthour = datetime.now().hour
-startday = datetime.now().day
-
-nowminute = datetime.now().minute
-nowhour = datetime.now().hour
-nowday = datetime.now().day
-
 position = 0
 order_price = 0
+
+yobi = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+nowweekday = datetime.now().strftime("%A")
+
 
 
 def main(position,order_price):
 
-    
+    now_time = datetime.now().strftime("%H:%M:%S")
     
     # 現在の価格取得s
     now_price = moju.get_Mdata(1,ashi,instrument)['close'][0]
@@ -133,6 +132,9 @@ def main(position,order_price):
         position = -1
         order_price = now_price
         print("short:",order_price)
+        with open('trade.csv','a') as f:
+            write = csv.writer(f)
+            write.writerow([now_time,order_price,"short"])
         
 
     # # ロング、条件
@@ -142,6 +144,9 @@ def main(position,order_price):
         position = 1
         order_price = now_price
         print("long:",order_price)
+        with open('trade.csv','a') as f:
+            write = csv.writer(f)
+            write.writerow([now_time,order_price,"long"])
 
 
     # 決済
@@ -150,44 +155,54 @@ def main(position,order_price):
         print("売り決済")
         position = 0
         order_price = 0
+        price = abs(order_price - now_price)
+        with open('trade.csv','a') as f:
+            write = csv.writer(f)
+            write.writerow([now_time,now_price,order_price,price,"売り決済"])
 
     if position == 1 and now_price > lower and MACD[-1] >= signal[-1]:
         moju.short_position(instrument)
         print("買い決済")
         position = 0
         order_price = 0
+        price = now_price - order_price
+        with open('trade.csv','a') as f:
+            write = csv.writer(f)
+            write.writerow([now_time,now_price,order_price,price,"決済"])
 
     # 損切り
     if position == -1 and now_price > order_price + stoploss:
         moju.short_position(instrument)
         position = 0
         order_price = 0
+        price = order_price - now_price
+        with open('trade.csv','a') as f:
+            write = csv.writer(f)
+            write.writerow([now_time,now_price,order_price,price,"売り損切り"])
 
     if position == 1 and now_price < order_price - stoploss:
         moju.long_position(instrument)
         position = 0
         order_price = 0
+        price = now_price - order_price
+        with open('trade.csv','a') as f:
+            write = csv.writer(f)
+            write.writerow([now_time,now_price,order_price,price,"買い損切り"])
 
 
     return position,order_price
     
-
-    
-
-
-
 
 
 
 if __name__ == "__main__":
 #    app.run()
     position = 0
-    while((nowday - startday)*24*60+(nowhour - starthour)*60+(nowminute - startminute)<60*9):
-        nowminute = datetime.now().minute
-        nowhour = datetime.now().hour
-        nowday = datetime.now().day
+    now_weekday = datetime.now().strftime("%A")
+    while(now_weekday != "saturday" | now_weekday != "sunday"):
         position,order_price = main(position,order_price)
         time.sleep(60)
+    nowweekday = datetime.now().strftime("%A")
 
 
 
