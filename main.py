@@ -39,7 +39,7 @@ access_token = "70d74d6fe6d320399a4cc2c639d14561-eb0e01166e59d92331fedd308dd581f
 api = API(access_token = access_token)
 
 # 通貨の選択
-instrument = "USD_JPY"
+
 
 @app.route("/")
 def hello_world():
