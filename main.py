@@ -51,10 +51,11 @@ nowminute = datetime.now().minute
 nowhour = datetime.now().hour
 nowday = datetime.now().day
 
-position = 0
+position = ""
 
 def main():
-    
+    if position == None:
+        position = 0
     # 現在の価格取得s
     now_price = moju.get_Mdata(1,ashi,instrument)['close'][0]
     print("現在レート:",now_price)
