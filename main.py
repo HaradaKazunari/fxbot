@@ -55,10 +55,9 @@ position = 0
 order_price = 0
 
 
-def main():
+def main(position,order_price):
 
-    global position
-    global order_price
+    
     
     # 現在の価格取得s
     now_price = moju.get_Mdata(1,ashi,instrument)['close'][0]
@@ -187,7 +186,7 @@ if __name__ == "__main__":
         nowminute = datetime.now().minute
         nowhour = datetime.now().hour
         nowday = datetime.now().day
-        main()
+        position,order_price = main(position,order_price)
         time.sleep(60)
 
 
