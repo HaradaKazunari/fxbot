@@ -51,7 +51,6 @@ nowminute = datetime.now().minute
 nowhour = datetime.now().hour
 nowday = datetime.now().day
 
-position = 0
 
 def main():
     
