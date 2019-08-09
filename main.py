@@ -128,7 +128,7 @@ def main(position,order_price):
     # position = 0
     if now_price >= upper and pDI > mDI and MACD[-1] > signal[-1] and position == 0:
         price = now_price + stoploss #損切りline
-        moju.order(-10000,instrument,price)
+        moju.order(-2000,instrument,price)
         position = -1
         order_price = now_price
         print("short:",order_price)
@@ -140,7 +140,7 @@ def main(position,order_price):
     # # ロング、条件
     if now_price <= lower and pDI < mDI and MACD[-1] < signal[-1] and position == 0:
         price  = now_price - stoploss #損切りline
-        moju.order(10000,instrument,price)
+        moju.order(2000,instrument,price)
         position = 1
         order_price = now_price
         print("long:",order_price)
