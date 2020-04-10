@@ -37,8 +37,8 @@ YOUR_CHANNEL_SECRET = os.environ["YOUR_CHANNEL_SECRET"]
 line_bot_api = LineBotApi(YOUR_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(YOUR_CHANNEL_SECRET)
 
-accountID = "101-009-10531705-001"
-access_token = "44b28576b8eedb662e615e45a2a96f0a-7efc3d152ddc10b7abc646eace3fe388"
+accountID = ""
+access_token = ""
 api = API(access_token = access_token)
 
 instrument = "GBP_USD"
